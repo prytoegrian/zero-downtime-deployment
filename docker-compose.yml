@@ -19,7 +19,10 @@ services:
   #
   front-2:
     restart: unless-stopped
-    image: httpd:2-alpine
+    build:
+      context: ./configs/front-2
+      dockerfile: ./Dockerfile
+    image: prytoegrian/front-2
     container_name: front-2
     ports:
       - 8081:80
