@@ -12,9 +12,9 @@ services:
     image: prytoegrian/front-1
     container_name: front-1
     ports:
-      - 8081:80
-    # expose:
-    #   - 8080
+      - 8181:80 # Direct access, for deployment checks
+    expose:
+        - 8080
     networks:
      - frontend
 
@@ -28,10 +28,8 @@ services:
       dockerfile: ./front-2/Dockerfile
     image: prytoegrian/front-2
     container_name: front-2
-    ports:
-      - 8082:80
-    # expose:
-    #   - 8080
+    expose:
+        - 8080
     networks:
      - frontend
 
