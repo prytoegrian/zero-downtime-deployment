@@ -7,10 +7,14 @@ services:
   front-1:
     restart: unless-stopped
     build:
-      context: ./configs/front-1
-      dockerfile: ./Dockerfile
+      context: ./configs/
+      dockerfile: ./front-1/Dockerfile
     image: prytoegrian/front-1
     container_name: front-1
+    ports:
+      - 8081:80
+    # expose:
+    #   - 8080
     networks:
      - frontend
 
@@ -20,14 +24,17 @@ services:
   front-2:
     restart: unless-stopped
     build:
-      context: ./configs/front-2
-      dockerfile: ./Dockerfile
+      context: ./configs/
+      dockerfile: ./front-2/Dockerfile
     image: prytoegrian/front-2
     container_name: front-2
     ports:
-      - 8081:80
+      - 8082:80
+    # expose:
+    #   - 8080
     networks:
      - frontend
+
 
   #
   # Load balancer
@@ -43,6 +50,8 @@ services:
       - 80:80
     networks:
      - frontend
+    cap_add:
+        - NET_ADMIN
 
 networks:
   frontend:
