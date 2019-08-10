@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  #
+  # Front 1
+  #
+  front-1:
+    restart: unless-stopped
+    image: httpd:2.4-alpine
+    container_name: front-1
+    ports:
+      - 8080:80
+
+  #
+  # Front 2
+  #
+  front-2:
+    restart: unless-stopped
+    image: httpd:2.4-alpine
+    container_name: front-2
+    ports:
+      - 8081:80
