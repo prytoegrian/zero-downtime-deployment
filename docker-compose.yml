@@ -6,17 +6,40 @@ services:
   #
   front-1:
     restart: unless-stopped
-    image: httpd:2.4-alpine
+    build:
+      context: ./configs/front-1
+      dockerfile: ./Dockerfile
+    image: prytoegrian/front-1
     container_name: front-1
-    ports:
-      - 8080:80
+    networks:
+     - frontend
 
   #
   # Front 2
   #
   front-2:
     restart: unless-stopped
-    image: httpd:2.4-alpine
+    image: httpd:2-alpine
     container_name: front-2
     ports:
       - 8081:80
+    networks:
+     - frontend
+
+  #
+  # Load balancer
+  #
+  load-balancer:
+    restart: unless-stopped
+    build:
+      context: ./configs/load-balancer
+      dockerfile: ./Dockerfile
+    image: prytoegrian/load-balancer
+    container_name: load-balancer
+    ports:
+      - 80:80
+    networks:
+     - frontend
+
+networks:
+  frontend:
