@@ -19,3 +19,9 @@ start:
 
 stop:
 	docker-compose stop
+
+enable-forward:
+	docker exec load-balancer enable-forward.sh
+
+disable-forward:
+	docker exec load-balancer disable-forward.sh
