@@ -13,7 +13,6 @@ services:
     container_name: front-1
     ports:
       - 8181:80 # Direct access, for deployment checks purpose
-      - 8080:8080
     expose:
         - 8080
     networks:
