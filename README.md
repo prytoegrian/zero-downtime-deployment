@@ -1,25 +1,47 @@
-## Personal documentation
+# Hello world !
 
-https://www.nginx.com/resources/glossary/load-balancing/
-https://medium.com/@cgrant/deployment-strategies-release-best-practices-6e557c3f39b4
-https://thenewstack.io/deployment-strategies/
-https://www.haproxy.org/download/1.3/doc/architecture.txt
-https://cbonte.github.io/haproxy-dconv/2.0/configuration.html
-https://www.digitalocean.com/community/tutorials/an-introduction-to-haproxy-and-load-balancing-concepts
-https://community.jaguar-network.com/faire-du-load-balancing-avec-haproxy/
-https://www.haproxy.com/blog/haproxy-and-varnish-comparison/
-https://docs.oracle.com/cd/E37670_01/E41138/html/section_brt_vmb_nr.html
-https://www.haproxy.org/download/1.3/doc/haproxy-en.txt
-https://blog.octo.com/en/how-does-it-work-docker-part-3-load-balancing-service-discovery-and-security/
-https://www.igvita.com/2008/12/02/zero-downtime-restarts-with-haproxy/
-https://botleg.com/stories/load-balancing-with-docker-swarm/
+This repo aims to be used in two main purposes:
+- help me and others to learn how a load balancer works,
+- provide a documentation to whoever wants to deploy a load balanced application without downtime to the end users.
 
+In a certain sense, this methodology follows a blue / green in canary strategy for continuous deployment.  
+:warning: If one wants to stick zero downtime deployment strategy, this method is not enough though ; they have not to forget dependencies decoupling upfront (ex: BDD expansion / reduction).
 
-Chaque serveur physique possède deux vhosts :
-- :8080 qui est l'accès principal,
-- :80 qui est l'accès de backup.
+# How the heck does this stuff work ?
 
-Le routage des serveurs backup-X de :8888 à :8080 se fait via iptables. Au moment du déploiement, le script `disable-forward.sh` est exécuté et le lien est coupé. C'est alors le vhost principal qui prend le relai sans perte de connexion pour les utilisateurs qui étaient sur le serveur. La réactivation du routage se fait via `enable-forward.sh`
+Each physical server has two vhosts, segregated by port:
+- :8080, pointing to the main access,
+- :80, pointing to the backup.
 
+Both vhosts route to the same app, eventually versioned (ex: in the repo, they show different page, showing the switch).
 
-Pour aller encore plus vite dans le déploiement, la définition des vhosts peut être un lien symbolique vers un numéro de version. Grâce à ça, la mise en place de la version sur le serveur peut se faire en amont, et les bascules sont immédiates dès lors que la livraison du premier serveur s'est bien passée.
+However, Haproxy's configuration checks to :8888 for the "main" app. The routing 8888->8080 is assured via Iptables. During the deployment, redirection is removed, and "backup" takes up the baton. Doing so, in maintenance or not, the users are seamlessly redirected, since the sessions are kept.
+
+# How to use it
+
+As a lazy developer, I used `make` and `docker` for my operations:
+- `make build` for building the images,
+- `make attach-X` for attaching a container and studying it,
+- `make enable-forward` for "unset" maintenance mode for main servers,
+- `make disable-forward` for "set" maintenance mode for main servers.
+
+Regarding the web access, `dummy.local` shows you the load balancer in action, `dummy.local/stats` helps you to understand Haproxy's config.
+
+# Improvement ideas
+
+- Allow to set servers in maintenance one by one,
+- Define vhosts as symlinks to a versioned application directory in order to "deploy" immediately a vhosts (thanks Benjamin).
+
+# Contribution
+
+Every criticism, proposition and correction are welcome. Simply open a ticket or a PR.
+
+# Documentations read for building this repo
+
+https://www.nginx.com/resources/glossary/load-balancing/  
+https://medium.com/@cgrant/deployment-strategies-release-best-practices-6e557c3f39b4  
+https://thenewstack.io/deployment-strategies/  
+https://cbonte.github.io/haproxy-dconv/2.0/configuration.html  
+https://www.haproxy.org/download/1.3/doc/architecture.txt  
+https://www.haproxy.com/blog/haproxy-and-varnish-comparison/  
+https://www.igvita.com/2008/12/02/zero-downtime-restarts-with-haproxy/  
