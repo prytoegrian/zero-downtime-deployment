@@ -7,14 +7,13 @@ services:
   front-1:
     restart: unless-stopped
     build:
-      context: ./configs/
-      dockerfile: ./front-1/Dockerfile
+      context: ./configs/front-1
+      dockerfile: ./Dockerfile
     image: prytoegrian/front-1
     container_name: front-1
-    ports:
-      - 8181:80 # Direct access, for deployment checks purpose
     expose:
         - 8080
+        - 80
     networks:
      - frontend
 
@@ -24,14 +23,13 @@ services:
   front-2:
     restart: unless-stopped
     build:
-      context: ./configs/
-      dockerfile: ./front-2/Dockerfile
+      context: ./configs/front-2
+      dockerfile: ./Dockerfile
     image: prytoegrian/front-2
     container_name: front-2
-    ports:
-        - 8282:80 # Direct access, for deployment checks purpose
     expose:
         - 8080
+        - 80
     networks:
      - frontend
 
